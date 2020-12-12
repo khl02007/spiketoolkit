@@ -5,7 +5,7 @@ from .quality_metric import QualityMetric
 from collections import OrderedDict
 from .parameter_dictionaries import update_all_param_dicts_with_kwargs
 
-
+#
 class NearestNeighbor(QualityMetric):
     installed = True  # check at class level if installed or not
     installation_mesg = ""  # err
@@ -21,7 +21,7 @@ class NearestNeighbor(QualityMetric):
             raise ValueError("MetricData object must have pca scores")
 
     def compute_metric(self, num_channels_to_compare, max_spikes_per_cluster, max_spikes_for_nn,
-                       n_neighbors, **kwargs):
+                       n_neighbors, channel_locations, **kwargs):
         params_dict = update_all_param_dicts_with_kwargs(kwargs)
         save_property_or_features = params_dict['save_property_or_features']
         seed = params_dict['seed']
@@ -36,6 +36,7 @@ class NearestNeighbor(QualityMetric):
             max_spikes_for_cluster=max_spikes_per_cluster,
             spikes_for_nn=spikes_for_nn,
             n_neighbors=n_neighbors,
+            channel_locations=channel_locations,
             metric_names=["nearest_neighbor"],
             seed=seed,
             spike_cluster_subset=self._metric_data._unit_indices,
