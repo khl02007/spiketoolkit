@@ -390,6 +390,7 @@ def compute_snrs(
 def compute_noise_overlaps(
         sorting,
         recording,
+        num_channels_to_compare=NoiseOverlap.params['num_channels_to_compare'],
         num_features=NoiseOverlap.params['num_features'],
         num_knn=NoiseOverlap.params['num_knn'],
         max_spikes_per_unit_for_noise_overlap=NoiseOverlap.params['max_spikes_per_unit_for_noise_overlap'],
@@ -481,8 +482,9 @@ def compute_noise_overlaps(
                     verbose=params_dict['verbose'])
 
     noise_overlap = NoiseOverlap(metric_data=md)
-    noise_overlaps = noise_overlap.compute_metric(max_spikes_per_unit_for_noise_overlap, num_features, num_knn,
-                                                  **kwargs)
+    noise_overlaps = noise_overlap.compute_metric(num_channels_to_compare,
+                                                  max_spikes_per_unit_for_noise_overlap,
+                                                  num_features, num_knn, **kwargs)
     return noise_overlaps
 
 
@@ -1275,7 +1277,8 @@ def compute_quality_metrics(
 
     if "noise_overlap" in metric_names:
         noise_overlap = NoiseOverlap(metric_data=md)
-        noise_overlaps = noise_overlap.compute_metric(max_spikes_per_unit_for_noise_overlap,
+        noise_overlaps = noise_overlap.compute_metric(num_channels_to_compare,
+                                                      max_spikes_per_unit_for_noise_overlap,
                                                       noise_overlap_num_features,
                                                       noise_overlap_num_knn,
                                                       **kwargs)
@@ -1294,7 +1297,7 @@ def compute_quality_metrics(
     if "nn_hit_rate" in metric_names or "nn_miss_rate" in metric_names:
         nn = NearestNeighbor(metric_data=md)
         nn_hit_rates, nn_miss_rates = nn.compute_metric(num_channels_to_compare, max_spikes_per_cluster,
-                                                        max_spikes_for_nn, n_neighbors, recording.get_channel_locations(), **kwargs)
+                                                        max_spikes_for_nn, n_neighbors, **kwargs)
         if "nn_hit_rate" in metric_names:
             metrics_dict['nn_hit_rate'] = nn_hit_rates
         if "nn_miss_rate" in metric_names:
